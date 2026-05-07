@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Konan &amp; Spade Briefs</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,400;0,500;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.88em' font-size='80' fill='%23c49a6c'>♠</text></svg>">
+    <style>
+        *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+        :root{--bg:#faf9f7;--surface:#fff;--border:#e8e4e0;--accent:#9a7550;--accent-light:#b8956e;--text:#1a1817;--text-sec:#6b6560;--text-dim:#a09a94;--radius:8px;--danger:#c43e3e}
+        body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+
+        .login-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px}
+        .login-box{background:var(--surface);border-radius:12px;padding:48px 40px;max-width:380px;width:100%;box-shadow:0 4px 24px rgba(0,0,0,.06);text-align:center}
+        .login-box h1{font-family:'Cormorant',serif;font-size:1.8rem;font-weight:500;margin-bottom:8px}
+        .login-box p{color:var(--text-sec);font-size:.9rem;margin-bottom:28px}
+        .login-box input{width:100%;padding:12px 16px;border:1.5px solid var(--border);border-radius:var(--radius);font-family:'Outfit',sans-serif;font-size:.95rem;outline:none;margin-bottom:16px;transition:border-color .2s}
+        .login-box input:focus{border-color:var(--accent)}
+        .login-box button{width:100%;padding:12px;background:var(--accent);color:#fff;border:none;border-radius:var(--radius);font-family:'Outfit',sans-serif;font-size:.9rem;font-weight:500;cursor:pointer;transition:background .2s}
+        .login-box button:hover{background:var(--accent-light)}
+        .login-error{color:var(--danger);font-size:.82rem;margin-top:8px;display:none}
+
+        .dashboard{display:none}
+        .dash-header{background:var(--surface);border-bottom:1px solid var(--border);padding:16px 32px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10}
+        .dash-logo{height:20px;filter:invert(1)}
+        .dash-actions{display:flex;gap:12px;align-items:center}
+        .dash-btn{padding:8px 16px;border:1.5px solid var(--border);border-radius:var(--radius);background:transparent;color:var(--text-sec);font-family:'Outfit',sans-serif;font-size:.82rem;cursor:pointer;transition:all .2s}
+        .dash-btn:hover{border-color:var(--accent);color:var(--accent)}
+        .dash-btn.active{background:var(--accent);border-color:var(--accent);color:#fff}
+        .dash-btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+        .dash-btn.primary:hover{background:var(--accent-light);border-color:var(--accent-light)}
+        .dash-btn.danger{color:var(--danger);border-color:var(--danger)}
+        .dash-btn.danger:hover{background:var(--danger);color:#fff}
+
+        .dash-content{max-width:1100px;margin:0 auto;padding:32px}
+        .dash-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:32px}
+        .stat-card{background:var(--surface);border-radius:var(--radius);padding:20px;border:1px solid var(--border)}
+        .stat-label{font-size:.75rem;font-weight:500;text-transform:uppercase;letter-spacing:.1em;color:var(--text-dim);margin-bottom:4px}
+        .stat-value{font-size:1.6rem;font-weight:600;color:var(--text)}
+
+        .filters{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+
+        .table-wrap{background:var(--surface);border-radius:var(--radius);border:1px solid var(--border);overflow:hidden}
+        table{width:100%;border-collapse:collapse}
+        th{text-align:left;padding:12px 16px;font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--text-dim);border-bottom:1px solid var(--border);background:var(--bg)}
+        td{padding:14px 16px;font-size:.88rem;border-bottom:1px solid var(--border);vertical-align:top}
+        tr:last-child td{border-bottom:none}
+        tr:hover td{background:#faf8f5}
+        .clickable{cursor:pointer}
+        .status-badge{display:inline-block;padding:3px 10px;border-radius:100px;font-size:.72rem;font-weight:500;text-transform:uppercase;letter-spacing:.05em}
+        .status-new{background:#e8f4fd;color:#1a6fb5}
+        .status-reviewed{background:#fef3e2;color:#b87a1a}
+        .status-in-progress{background:#f0e8fd;color:#7a3ab5}
+        .status-completed{background:#e6f6ec;color:#2a7a42}
+        .status-archived{background:#f0eeec;color:#8a8480}
+        .mode-badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:.72rem;font-weight:500}
+        .mode-general{background:#f0eeec;color:#6b6560}
+        .mode-lawfirm{background:#fef3e2;color:#8a6328}
+        .has-notes{color:var(--accent);font-size:.72rem}
+        .empty-state{text-align:center;padding:60px 20px;color:var(--text-dim)}
+
+        /* Detail Panel */
+        .detail-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.3);z-index:100}
+        .detail-overlay.active{display:block}
+        .detail-panel{position:fixed;top:0;right:0;bottom:0;width:620px;max-width:100%;background:var(--surface);z-index:101;overflow-y:auto;box-shadow:-8px 0 30px rgba(0,0,0,.1);transform:translateX(100%);transition:transform .3s ease}
+        .detail-panel.active{transform:translateX(0)}
+        .detail-header{padding:24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--surface);z-index:1}
+        .detail-header h2{font-family:'Cormorant',serif;font-size:1.4rem;font-weight:500}
+        .detail-close{background:none;border:none;font-size:1.4rem;cursor:pointer;color:var(--text-sec);padding:4px 8px}
+        .detail-body{padding:24px}
+        .detail-section{margin-bottom:28px}
+        .detail-section-title{font-size:.72rem;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);margin-bottom:12px;display:flex;align-items:center;justify-content:space-between}
+        .detail-field{margin-bottom:14px}
+        .detail-label{font-size:.75rem;font-weight:500;color:var(--text-dim);margin-bottom:4px}
+        .detail-value{font-size:.9rem;color:var(--text);line-height:1.6}
+        .detail-chips{display:flex;flex-wrap:wrap;gap:4px}
+        .detail-chip{display:inline-block;padding:3px 10px;background:var(--bg);border:1px solid var(--border);border-radius:100px;font-size:.78rem;color:var(--text-sec)}
+        .detail-actions{padding:24px;border-top:1px solid var(--border);display:flex;gap:8px;flex-wrap:wrap;position:sticky;bottom:0;background:var(--surface)}
+        .detail-actions select{padding:8px 12px;border:1.5px solid var(--border);border-radius:var(--radius);font-family:'Outfit',sans-serif;font-size:.85rem;outline:none;cursor:pointer}
+        .detail-actions select:focus{border-color:var(--accent)}
+        .brief-text{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:16px;white-space:pre-wrap;font-family:monospace;font-size:.78rem;color:var(--text-sec);max-height:300px;overflow-y:auto;margin-top:8px}
+
+        /* Notes */
+        .notes-area{width:100%;min-height:80px;padding:12px;border:1.5px solid var(--border);border-radius:var(--radius);font-family:'Outfit',sans-serif;font-size:.88rem;outline:none;resize:vertical;color:var(--text);background:var(--bg);transition:border-color .2s}
+        .notes-area:focus{border-color:var(--accent)}
+        .notes-saved{color:var(--accent);font-size:.78rem;opacity:0;transition:opacity .3s}
+        .notes-saved.show{opacity:1}
+
+        /* Modal */
+        .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:200;align-items:center;justify-content:center}
+        .modal-overlay.active{display:flex}
+        .modal{background:var(--surface);border-radius:12px;padding:32px;max-width:520px;width:calc(100% - 32px);max-height:90vh;overflow-y:auto;box-shadow:0 12px 48px rgba(0,0,0,.12)}
+        .modal h2{font-family:'Cormorant',serif;font-size:1.4rem;font-weight:500;margin-bottom:24px}
+        .modal-field{margin-bottom:16px}
+        .modal-field label{display:block;font-size:.78rem;font-weight:500;text-transform:uppercase;letter-spacing:.05em;color:var(--text-dim);margin-bottom:6px}
+        .modal-field input,.modal-field textarea,.modal-field select{width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:var(--radius);font-family:'Outfit',sans-serif;font-size:.9rem;outline:none;transition:border-color .2s;color:var(--text)}
+        .modal-field input:focus,.modal-field textarea:focus,.modal-field select:focus{border-color:var(--accent)}
+        .modal-field textarea{min-height:80px;resize:vertical}
+        .modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:24px}
+        .modal-error{color:var(--danger);font-size:.82rem;margin-top:8px;display:none}
+
+        /* Edit mode */
+        .edit-input{width:100%;padding:8px 12px;border:1.5px solid var(--border);border-radius:var(--radius);font-family:'Outfit',sans-serif;font-size:.88rem;outline:none;transition:border-color .2s;color:var(--text)}
+        .edit-input:focus{border-color:var(--accent)}
+        .edit-textarea{width:100%;padding:8px 12px;border:1.5px solid var(--border);border-radius:var(--radius);font-family:'Outfit',sans-serif;font-size:.88rem;outline:none;min-height:60px;resize:vertical;transition:border-color .2s;color:var(--text)}
+        .edit-textarea:focus{border-color:var(--accent)}
+
+        /* Bulk bar */
+        .bulk-bar{display:none;align-items:center;gap:12px;padding:12px 20px;background:var(--surface);border:1.5px solid var(--accent);border-radius:var(--radius);margin-bottom:16px;flex-wrap:wrap}
+        .bulk-bar.active{display:flex}
+        .bulk-count{font-size:.88rem;font-weight:500;color:var(--accent);white-space:nowrap}
+        .bulk-bar select{padding:6px 10px;border:1.5px solid var(--border);border-radius:var(--radius);font-family:'Outfit',sans-serif;font-size:.82rem;outline:none;cursor:pointer}
+        .bulk-bar select:focus{border-color:var(--accent)}
+
+        /* Checkboxes */
+        .row-check{width:18px;height:18px;accent-color:var(--accent);cursor:pointer;margin:0;flex-shrink:0}
+        th.check-col,td.check-col{width:40px;text-align:center;padding-left:12px;padding-right:4px}
+        td.check-col{vertical-align:middle}
+
+        .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1e1e1e;color:#fff;padding:12px 24px;border-radius:var(--radius);font-size:.88rem;z-index:300;opacity:0;transition:opacity .3s;pointer-events:none}
+        .toast.show{opacity:1}
+
+        @media(max-width:768px){
+            .dash-stats{grid-template-columns:repeat(2,1fr)}
+            .dash-content{padding:16px}
+            .dash-header{padding:12px 16px}
+            .detail-panel{width:100%}
+            th:nth-child(4),td:nth-child(4){display:none}
+        }
+    </style>
+</head>
+<body>
+
+<!-- Login -->
+<div class="login-screen" id="loginScreen">
+    <div class="login-box">
+        <img src="logo.svg" alt="Konan & Spade" style="height:24px;filter:invert(1);margin-bottom:24px">
+        <h1>Admin Panel</h1>
+        <p>Enter your admin token to view submissions.</p>
+        <input type="password" id="tokenInput" placeholder="Admin token" autofocus>
+        <button id="loginBtn">Sign In</button>
+        <div class="login-error" id="loginError">Invalid token. Please try again.</div>
+    </div>
+</div>
+
+<!-- Dashboard -->
+<div class="dashboard" id="dashboard">
+    <header class="dash-header">
+        <img src="logo.svg" alt="Konan & Spade" class="dash-logo">
+        <div class="dash-actions">
+            <button class="dash-btn primary" id="btnCreate">+ New Brief</button>
+            <button class="dash-btn" id="btnRefresh">Refresh</button>
+            <button class="dash-btn" id="btnLogout">Logout</button>
+        </div>
+    </header>
+
+    <div class="dash-content">
+        <div class="dash-stats" id="stats">
+            <div class="stat-card"><div class="stat-label">Total</div><div class="stat-value" id="statTotal">0</div></div>
+            <div class="stat-card"><div class="stat-label">New</div><div class="stat-value" id="statNew">0</div></div>
+            <div class="stat-card"><div class="stat-label">In Progress</div><div class="stat-value" id="statProgress">0</div></div>
+            <div class="stat-card"><div class="stat-label">Completed</div><div class="stat-value" id="statCompleted">0</div></div>
+        </div>
+
+        <div class="filters">
+            <button class="dash-btn active" data-filter="">All</button>
+            <button class="dash-btn" data-filter="new">New</button>
+            <button class="dash-btn" data-filter="reviewed">Reviewed</button>
+            <button class="dash-btn" data-filter="in-progress">In Progress</button>
+            <button class="dash-btn" data-filter="completed">Completed</button>
+            <button class="dash-btn" data-filter="archived">Archived</button>
+            <span style="width:1px;background:var(--border);margin:0 4px"></span>
+            <button class="dash-btn" data-mode="">All Types</button>
+            <button class="dash-btn" data-mode="general">General</button>
+            <button class="dash-btn" data-mode="lawfirm">Law Firm</button>
+        </div>
+
+        <div class="bulk-bar" id="bulkBar">
+            <span class="bulk-count" id="bulkCount">0 selected</span>
+            <select id="bulkStatus">
+                <option value="">Change status to...</option>
+                <option value="new">New</option>
+                <option value="reviewed">Reviewed</option>
+                <option value="in-progress">In Progress</option>
+                <option value="completed">Completed</option>
+                <option value="archived">Archived</option>
+            </select>
+            <button class="dash-btn" id="btnBulkStatus">Apply</button>
+            <button class="dash-btn" id="btnBulkExport">Export CSV</button>
+            <button class="dash-btn danger" id="btnBulkDelete" style="margin-left:auto">Delete Selected</button>
+        </div>
+
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr><th class="check-col"><input type="checkbox" class="row-check" id="selectAll"></th><th>Company</th><th>Client</th><th>Mode</th><th>Status</th><th>Date</th></tr>
+                </thead>
+                <tbody id="tableBody">
+                    <tr><td colspan="6" class="empty-state">No submissions yet</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Detail Panel -->
+<div class="detail-overlay" id="detailOverlay"></div>
+<div class="detail-panel" id="detailPanel">
+    <div class="detail-header">
+        <h2 id="detailTitle">Submission</h2>
+        <div style="display:flex;gap:8px;align-items:center">
+            <button class="dash-btn" id="btnEdit">Edit</button>
+            <button class="detail-close" id="detailClose">&times;</button>
+        </div>
+    </div>
+    <div class="detail-body" id="detailBody"></div>
+    <div class="detail-actions" id="detailActions">
+        <select id="statusSelect">
+            <option value="new">New</option>
+            <option value="reviewed">Reviewed</option>
+            <option value="in-progress">In Progress</option>
+            <option value="completed">Completed</option>
+            <option value="archived">Archived</option>
+        </select>
+        <button class="dash-btn" id="btnUpdateStatus">Update Status</button>
+        <button class="dash-btn" id="btnCopyBrief">Copy Brief</button>
+        <button class="dash-btn danger" id="btnDelete" style="margin-left:auto">Delete</button>
+    </div>
+    <div class="detail-actions" id="editActions" style="display:none">
+        <button class="dash-btn primary" id="btnSaveEdit">Save Changes</button>
+        <button class="dash-btn" id="btnCancelEdit">Cancel</button>
+    </div>
+</div>
+
+<!-- Create Modal -->
+<div class="modal-overlay" id="createModal">
+    <div class="modal">
+        <h2>New Submission</h2>
+        <div class="modal-field">
+            <label>Client Name *</label>
+            <input type="text" id="createName">
+        </div>
+        <div class="modal-field">
+            <label>Client Email *</label>
+            <input type="email" id="createEmail">
+        </div>
+        <div class="modal-field">
+            <label>Company Name *</label>
+            <input type="text" id="createCompany">
+        </div>
+        <div class="modal-field">
+            <label>Mode</label>
+            <select id="createMode">
+                <option value="general">General</option>
+                <option value="lawfirm">Law Firm</option>
+            </select>
+        </div>
+        <div class="modal-field">
+            <label>Business Description</label>
+            <textarea id="createDesc"></textarea>
+        </div>
+        <div class="modal-field">
+            <label>Internal Notes</label>
+            <textarea id="createNotes" placeholder="Internal notes (not visible to client)"></textarea>
+        </div>
+        <div class="modal-error" id="createError"></div>
+        <div class="modal-actions">
+            <button class="dash-btn" id="btnCreateCancel">Cancel</button>
+            <button class="dash-btn primary" id="btnCreateSave">Create</button>
+        </div>
+    </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+(() => {
+    let token = sessionStorage.getItem('ks-admin-token') || '';
+    let currentFilter = '';
+    let currentMode = '';
+    let currentSubmission = null;
+    let allSubmissions = [];
+    let editMode = false;
+    let selectedIds = new Set();
+
+    const API = '/api/admin';
+    const headers = () => ({ 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` });
+
+    if (token) tryLogin(token);
+
+    document.getElementById('loginBtn').addEventListener('click', () => tryLogin(document.getElementById('tokenInput').value.trim()));
+    document.getElementById('tokenInput').addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('loginBtn').click(); });
+    document.getElementById('btnLogout').addEventListener('click', () => { sessionStorage.removeItem('ks-admin-token'); location.reload(); });
+    document.getElementById('btnRefresh').addEventListener('click', loadSubmissions);
+    document.getElementById('detailClose').addEventListener('click', closeDetail);
+    document.getElementById('detailOverlay').addEventListener('click', closeDetail);
+    document.getElementById('btnUpdateStatus').addEventListener('click', updateStatus);
+    document.getElementById('btnCopyBrief').addEventListener('click', copyBrief);
+    document.getElementById('btnDelete').addEventListener('click', deleteSubmission);
+    document.getElementById('btnEdit').addEventListener('click', enterEditMode);
+    document.getElementById('btnSaveEdit').addEventListener('click', saveEdit);
+    document.getElementById('btnCancelEdit').addEventListener('click', exitEditMode);
+    document.getElementById('btnCreate').addEventListener('click', () => document.getElementById('createModal').classList.add('active'));
+    document.getElementById('btnCreateCancel').addEventListener('click', closeCreateModal);
+    document.getElementById('btnCreateSave').addEventListener('click', createSubmission);
+    document.getElementById('createModal').addEventListener('click', e => { if (e.target === e.currentTarget) closeCreateModal(); });
+    document.getElementById('selectAll').addEventListener('change', toggleSelectAll);
+    document.getElementById('btnBulkStatus').addEventListener('click', bulkUpdateStatus);
+    document.getElementById('btnBulkDelete').addEventListener('click', bulkDelete);
+    document.getElementById('btnBulkExport').addEventListener('click', bulkExport);
+
+    document.querySelectorAll('[data-filter]').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('[data-filter]').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            currentFilter = btn.dataset.filter;
+            clearSelection();
+            renderTable();
+        });
+    });
+    document.querySelectorAll('[data-mode]').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('[data-mode]').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            currentMode = btn.dataset.mode;
+            clearSelection();
+            renderTable();
+        });
+    });
+
+    async function tryLogin(t) {
+        token = t;
+        try {
+            const res = await fetch(`${API}?limit=1`, { headers: headers() });
+            if (res.ok) {
+                sessionStorage.setItem('ks-admin-token', token);
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('dashboard').style.display = 'block';
+                loadSubmissions();
+            } else {
+                document.getElementById('loginError').style.display = 'block';
+                sessionStorage.removeItem('ks-admin-token');
+            }
+        } catch (e) {
+            document.getElementById('loginError').style.display = 'block';
+        }
+    }
+
+    async function loadSubmissions() {
+        try {
+            const res = await fetch(`${API}?limit=200`, { headers: headers() });
+            const data = await res.json();
+            allSubmissions = data.submissions || [];
+            updateStats();
+            clearSelection();
+            renderTable();
+        } catch (e) {
+            console.error('Load error:', e);
+        }
+    }
+
+    function updateStats() {
+        document.getElementById('statTotal').textContent = allSubmissions.length;
+        document.getElementById('statNew').textContent = allSubmissions.filter(s => s.status === 'new').length;
+        document.getElementById('statProgress').textContent = allSubmissions.filter(s => s.status === 'in-progress').length;
+        document.getElementById('statCompleted').textContent = allSubmissions.filter(s => s.status === 'completed').length;
+    }
+
+    function getFiltered() {
+        let filtered = allSubmissions;
+        if (currentFilter) filtered = filtered.filter(s => s.status === currentFilter);
+        if (currentMode) filtered = filtered.filter(s => s.mode === currentMode);
+        return filtered;
+    }
+
+    function renderTable() {
+        const filtered = getFiltered();
+        const tbody = document.getElementById('tableBody');
+        if (!filtered.length) {
+            tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No submissions found</td></tr>';
+            return;
+        }
+
+        tbody.innerHTML = filtered.map(s => `
+            <tr class="clickable" data-id="${s.id}">
+                <td class="check-col" data-stop><input type="checkbox" class="row-check" data-check="${s.id}" ${selectedIds.has(s.id) ? 'checked' : ''}></td>
+                <td><strong>${esc(s.company_name)}</strong>${s.notes ? '<br><span class="has-notes">has notes</span>' : ''}</td>
+                <td>${esc(s.client_name)}<br><span style="font-size:.78rem;color:var(--text-dim)">${esc(s.client_email)}</span></td>
+                <td><span class="mode-badge mode-${s.mode}">${s.mode === 'lawfirm' ? 'Law Firm' : 'General'}</span></td>
+                <td><span class="status-badge status-${s.status}">${s.status}</span></td>
+                <td style="white-space:nowrap;font-size:.82rem;color:var(--text-sec)">${formatDate(s.created_at)}</td>
+            </tr>`).join('');
+
+        tbody.querySelectorAll('.clickable').forEach(row => {
+            row.addEventListener('click', e => {
+                if (e.target.closest('[data-stop]')) return;
+                openDetail(row.dataset.id);
+            });
+        });
+        tbody.querySelectorAll('[data-check]').forEach(cb => {
+            cb.addEventListener('change', () => {
+                const id = parseInt(cb.dataset.check);
+                if (cb.checked) selectedIds.add(id); else selectedIds.delete(id);
+                updateBulkBar();
+            });
+        });
+        updateBulkBar();
+    }
+
+    async function openDetail(id) {
+        editMode = false;
+        try {
+            const res = await fetch(`${API}?id=${id}`, { headers: headers() });
+            const sub = await res.json();
+            currentSubmission = sub;
+
+            document.getElementById('detailTitle').textContent = sub.company_name;
+            document.getElementById('statusSelect').value = sub.status;
+            document.getElementById('btnEdit').textContent = 'Edit';
+            document.getElementById('detailActions').style.display = 'flex';
+            document.getElementById('editActions').style.display = 'none';
+
+            renderDetailView(sub);
+
+            document.getElementById('detailOverlay').classList.add('active');
+            document.getElementById('detailPanel').classList.add('active');
+        } catch (e) {
+            console.error('Detail error:', e);
+        }
+    }
+
+    function renderDetailView(sub) {
+        const d = sub.data || {};
+
+        let html = '';
+        const sections = [
+            { title: 'Client Info', fields: [
+                ['Name', d.clientName], ['Email', d.clientEmail], ['Company', d.companyName]
+            ]},
+            { title: sub.mode === 'lawfirm' ? 'Firm Overview' : 'Business Overview', fields: [
+                ...(sub.mode === 'lawfirm' ? [['Practice Areas', d.practiceAreas], ['Firm Size', d.firmSize], ['Jurisdictions', d.jurisdictions]] : [['Industry', d.industry]]),
+                ['Founded', d.founded], ['Website', d.website], ['Description', d.businessDesc],
+                ...(sub.mode === 'lawfirm' ? [['Key Services', d.keyServices]] : [['Products', d.products]]),
+                ['Mission', d.mission]
+            ]},
+            { title: sub.mode === 'lawfirm' ? 'Ideal Clients' : 'Target Audience', fields: [
+                ['Ideal ' + (sub.mode === 'lawfirm' ? 'Client' : 'Customer'), d.idealCustomer],
+                ...(sub.mode === 'lawfirm' ? [['Client Type', d.clientType], ['Referral Sources', d.referralSources]] : [['Age Range', d.ageRange], ['Location', d.location]]),
+                [sub.mode === 'lawfirm' ? 'Client Values' : 'Pain Points', d.painPoints],
+                ...(sub.mode !== 'lawfirm' ? [['Online Channels', d.customerChannels]] : [])
+            ]},
+            { title: 'Brand Personality', fields: [
+                ['Traits', d.traits], ['Tone of Voice', d.toneOfVoice], ['Brand as Person', d.brandPerson], ['Brand Emotions', d.brandEmotion]
+            ]},
+            { title: 'Visual Direction', fields: [
+                ['Visual Styles', d.visualStyles], ['Colors', d.colorsLove], ['Brands Admired', d.brandsAdmire], ['Styles to Avoid', d.visualAvoid], ['Existing Assets', d.hasAssets]
+            ]},
+            { title: 'Competitors', fields: [
+                ['Competitor 1', d.competitor1], ['Competitor 2', d.competitor2], ['Competitor 3', d.competitor3],
+                ['Likes', d.competitorLike], ['Dislikes', d.competitorDislike], ['Differentiation', d.differentiation]
+            ]},
+            { title: 'Additional', fields: [
+                ['Requirements', d.requirements], ['Other Notes', d.anythingElse]
+            ]}
+        ];
+
+        sections.forEach(sec => {
+            const hasContent = sec.fields.some(([,v]) => v && (Array.isArray(v) ? v.length : true));
+            if (!hasContent) return;
+            html += `<div class="detail-section"><div class="detail-section-title">${sec.title}</div>`;
+            sec.fields.forEach(([label, val]) => {
+                if (!val) return;
+                if (Array.isArray(val)) {
+                    html += `<div class="detail-field"><div class="detail-label">${label}</div><div class="detail-chips">${val.map(v => `<span class="detail-chip">${esc(v)}</span>`).join('')}</div></div>`;
+                } else {
+                    html += `<div class="detail-field"><div class="detail-label">${label}</div><div class="detail-value">${esc(val)}</div></div>`;
+                }
+            });
+            html += '</div>';
+        });
+
+        if (sub.brief_text) {
+            html += `<div class="detail-section"><div class="detail-section-title">Full Brief</div><div class="brief-text">${esc(sub.brief_text)}</div></div>`;
+        }
+
+        // Notes section
+        html += `<div class="detail-section">
+            <div class="detail-section-title">Internal Notes <span class="notes-saved" id="notesSaved">Saved</span></div>
+            <textarea class="notes-area" id="notesArea" placeholder="Add internal notes...">${esc(sub.notes || '')}</textarea>
+        </div>`;
+
+        html += `<div class="detail-section"><div class="detail-section-title">Metadata</div>
+            <div class="detail-field"><div class="detail-label">Submitted</div><div class="detail-value">${new Date(sub.created_at).toLocaleString()}</div></div>
+            <div class="detail-field"><div class="detail-label">IP</div><div class="detail-value">${sub.ip_address || '-'}</div></div>
+            <div class="detail-field"><div class="detail-label">Mode</div><div class="detail-value">${sub.mode === 'lawfirm' ? 'Law Firm' : 'General'}</div></div>
+        </div>`;
+
+        document.getElementById('detailBody').innerHTML = html;
+
+        // Auto-save notes on blur
+        let notesTimer;
+        const notesArea = document.getElementById('notesArea');
+        if (notesArea) {
+            notesArea.addEventListener('input', () => {
+                clearTimeout(notesTimer);
+                notesTimer = setTimeout(() => saveNotes(notesArea.value), 800);
+            });
+        }
+    }
+
+    function renderEditView(sub) {
+        const d = sub.data || {};
+
+        const field = (key, label, val, type = 'text') => {
+            if (type === 'textarea') {
+                return `<div class="detail-field"><div class="detail-label">${label}</div><textarea class="edit-textarea" data-key="${key}">${esc(val || '')}</textarea></div>`;
+            }
+            return `<div class="detail-field"><div class="detail-label">${label}</div><input class="edit-input" type="${type}" data-key="${key}" value="${esc(val || '')}"></div>`;
+        };
+
+        let html = `<div class="detail-section"><div class="detail-section-title">Client Info</div>
+            ${field('clientName', 'Name', d.clientName)}
+            ${field('clientEmail', 'Email', d.clientEmail, 'email')}
+            ${field('companyName', 'Company', d.companyName)}
+        </div>`;
+
+        html += `<div class="detail-section"><div class="detail-section-title">${sub.mode === 'lawfirm' ? 'Firm Overview' : 'Business Overview'}</div>`;
+        if (sub.mode === 'lawfirm') {
+            html += field('firmSize', 'Firm Size', d.firmSize);
+            html += field('jurisdictions', 'Jurisdictions', d.jurisdictions);
+        } else {
+            html += field('industry', 'Industry', d.industry);
+        }
+        html += field('founded', 'Founded', d.founded);
+        html += field('website', 'Website', d.website);
+        html += field('businessDesc', 'Description', d.businessDesc, 'textarea');
+        html += field('mission', 'Mission', d.mission, 'textarea');
+        html += '</div>';
+
+        html += `<div class="detail-section"><div class="detail-section-title">Brand Personality</div>
+            ${field('toneOfVoice', 'Tone of Voice', d.toneOfVoice, 'textarea')}
+            ${field('brandPerson', 'Brand as Person', d.brandPerson, 'textarea')}
+            ${field('brandEmotion', 'Brand Emotions', d.brandEmotion, 'textarea')}
+        </div>`;
+
+        html += `<div class="detail-section"><div class="detail-section-title">Visual Direction</div>
+            ${field('brandsAdmire', 'Brands Admired', d.brandsAdmire, 'textarea')}
+            ${field('visualAvoid', 'Styles to Avoid', d.visualAvoid, 'textarea')}
+            ${field('hasAssets', 'Existing Assets', d.hasAssets)}
+        </div>`;
+
+        html += `<div class="detail-section"><div class="detail-section-title">Competitors</div>
+            ${field('competitor1', 'Competitor 1', d.competitor1)}
+            ${field('competitor2', 'Competitor 2', d.competitor2)}
+            ${field('competitor3', 'Competitor 3', d.competitor3)}
+            ${field('competitorLike', 'Likes', d.competitorLike, 'textarea')}
+            ${field('competitorDislike', 'Dislikes', d.competitorDislike, 'textarea')}
+            ${field('differentiation', 'Differentiation', d.differentiation, 'textarea')}
+        </div>`;
+
+        html += `<div class="detail-section"><div class="detail-section-title">Additional</div>
+            ${field('requirements', 'Requirements', d.requirements, 'textarea')}
+            ${field('anythingElse', 'Other Notes', d.anythingElse, 'textarea')}
+        </div>`;
+
+        html += `<div class="detail-section"><div class="detail-section-title">Brief Text</div>
+            <textarea class="edit-textarea" data-brief="true" style="min-height:120px">${esc(sub.brief_text || '')}</textarea>
+        </div>`;
+
+        html += `<div class="detail-section">
+            <div class="detail-section-title">Internal Notes</div>
+            <textarea class="edit-textarea" data-notes="true">${esc(sub.notes || '')}</textarea>
+        </div>`;
+
+        document.getElementById('detailBody').innerHTML = html;
+    }
+
+    function enterEditMode() {
+        if (!currentSubmission) return;
+        if (editMode) { exitEditMode(); return; }
+        editMode = true;
+        document.getElementById('btnEdit').textContent = 'View';
+        document.getElementById('detailActions').style.display = 'none';
+        document.getElementById('editActions').style.display = 'flex';
+        renderEditView(currentSubmission);
+    }
+
+    function exitEditMode() {
+        editMode = false;
+        document.getElementById('btnEdit').textContent = 'Edit';
+        document.getElementById('detailActions').style.display = 'flex';
+        document.getElementById('editActions').style.display = 'none';
+        renderDetailView(currentSubmission);
+    }
+
+    async function saveEdit() {
+        if (!currentSubmission) return;
+
+        const formData = { ...currentSubmission.data };
+        document.querySelectorAll('[data-key]').forEach(el => {
+            formData[el.dataset.key] = el.value;
+        });
+
+        const briefEl = document.querySelector('[data-brief]');
+        const notesEl = document.querySelector('[data-notes]');
+
+        const body = {
+            id: currentSubmission.id,
+            formData,
+            briefText: briefEl ? briefEl.value : currentSubmission.brief_text,
+            notes: notesEl ? notesEl.value : currentSubmission.notes,
+            status: currentSubmission.status
+        };
+
+        try {
+            const res = await fetch(API, { method: 'PUT', headers: headers(), body: JSON.stringify(body) });
+            if (res.ok) {
+                toast('Changes saved');
+                await openDetail(currentSubmission.id);
+                loadSubmissions();
+            } else {
+                const err = await res.json();
+                toast(err.error || 'Save failed');
+            }
+        } catch (e) {
+            toast('Save failed');
+        }
+    }
+
+    async function saveNotes(notes) {
+        if (!currentSubmission) return;
+        try {
+            await fetch(API, { method: 'PATCH', headers: headers(), body: JSON.stringify({ id: currentSubmission.id, notes }) });
+            currentSubmission.notes = notes;
+            const saved = document.getElementById('notesSaved');
+            if (saved) { saved.classList.add('show'); setTimeout(() => saved.classList.remove('show'), 1500); }
+        } catch (e) {
+            console.error('Notes save error:', e);
+        }
+    }
+
+    function closeDetail() {
+        document.getElementById('detailOverlay').classList.remove('active');
+        document.getElementById('detailPanel').classList.remove('active');
+        currentSubmission = null;
+        editMode = false;
+        loadSubmissions();
+    }
+
+    async function updateStatus() {
+        if (!currentSubmission) return;
+        const status = document.getElementById('statusSelect').value;
+        await fetch(API, { method: 'PATCH', headers: headers(), body: JSON.stringify({ id: currentSubmission.id, status }) });
+        currentSubmission.status = status;
+        toast('Status updated');
+        loadSubmissions();
+    }
+
+    function copyBrief() {
+        if (!currentSubmission?.brief_text) return;
+        navigator.clipboard.writeText(currentSubmission.brief_text).then(() => {
+            const btn = document.getElementById('btnCopyBrief');
+            btn.textContent = 'Copied!';
+            setTimeout(() => { btn.textContent = 'Copy Brief'; }, 2000);
+        });
+    }
+
+    async function deleteSubmission() {
+        if (!currentSubmission || !confirm('Delete this submission permanently?')) return;
+        await fetch(`${API}?id=${currentSubmission.id}`, { method: 'DELETE', headers: headers() });
+        closeDetail();
+        toast('Submission deleted');
+    }
+
+    async function createSubmission() {
+        const name = document.getElementById('createName').value.trim();
+        const email = document.getElementById('createEmail').value.trim();
+        const company = document.getElementById('createCompany').value.trim();
+        const mode = document.getElementById('createMode').value;
+        const desc = document.getElementById('createDesc').value.trim();
+        const notes = document.getElementById('createNotes').value.trim();
+
+        const errEl = document.getElementById('createError');
+        if (!name || !email || !company) {
+            errEl.textContent = 'Name, email, and company are required.';
+            errEl.style.display = 'block';
+            return;
+        }
+
+        const body = {
+            formData: { clientName: name, clientEmail: email, companyName: company, businessDesc: desc },
+            mode,
+            notes
+        };
+
+        try {
+            const res = await fetch(API, { method: 'POST', headers: headers(), body: JSON.stringify(body) });
+            if (res.ok) {
+                closeCreateModal();
+                toast('Submission created');
+                loadSubmissions();
+            } else {
+                const err = await res.json();
+                errEl.textContent = err.error || 'Create failed';
+                errEl.style.display = 'block';
+            }
+        } catch (e) {
+            errEl.textContent = 'Create failed';
+            errEl.style.display = 'block';
+        }
+    }
+
+    function closeCreateModal() {
+        document.getElementById('createModal').classList.remove('active');
+        document.getElementById('createName').value = '';
+        document.getElementById('createEmail').value = '';
+        document.getElementById('createCompany').value = '';
+        document.getElementById('createDesc').value = '';
+        document.getElementById('createNotes').value = '';
+        document.getElementById('createError').style.display = 'none';
+    }
+
+    function toast(msg) {
+        const el = document.getElementById('toast');
+        el.textContent = msg;
+        el.classList.add('show');
+        setTimeout(() => el.classList.remove('show'), 2500);
+    }
+
+    // ── Bulk Operations ──
+
+    function clearSelection() {
+        selectedIds.clear();
+        document.getElementById('selectAll').checked = false;
+        updateBulkBar();
+    }
+
+    function updateBulkBar() {
+        const bar = document.getElementById('bulkBar');
+        const count = selectedIds.size;
+        if (count > 0) {
+            bar.classList.add('active');
+            document.getElementById('bulkCount').textContent = `${count} selected`;
+        } else {
+            bar.classList.remove('active');
+        }
+        const filtered = getFiltered();
+        document.getElementById('selectAll').checked = filtered.length > 0 && filtered.every(s => selectedIds.has(s.id));
+    }
+
+    function toggleSelectAll() {
+        const checked = document.getElementById('selectAll').checked;
+        const filtered = getFiltered();
+        filtered.forEach(s => {
+            if (checked) selectedIds.add(s.id); else selectedIds.delete(s.id);
+        });
+        renderTable();
+    }
+
+    async function bulkUpdateStatus() {
+        const status = document.getElementById('bulkStatus').value;
+        if (!status) { toast('Select a status first'); return; }
+        if (!selectedIds.size) return;
+        const ids = [...selectedIds];
+        await fetch(API, { method: 'PATCH', headers: headers(), body: JSON.stringify({ ids, status }) });
+        toast(`${ids.length} submissions updated`);
+        document.getElementById('bulkStatus').value = '';
+        loadSubmissions();
+    }
+
+    async function bulkDelete() {
+        if (!selectedIds.size) return;
+        const count = selectedIds.size;
+        if (!confirm(`Delete ${count} submission${count > 1 ? 's' : ''} permanently?`)) return;
+        const ids = [...selectedIds].join(',');
+        await fetch(`${API}?ids=${ids}`, { method: 'DELETE', headers: headers() });
+        toast(`${count} submissions deleted`);
+        loadSubmissions();
+    }
+
+    function bulkExport() {
+        if (!selectedIds.size) { toast('Select submissions to export'); return; }
+        const selected = allSubmissions.filter(s => selectedIds.has(s.id));
+        const csvRows = [['ID','Company','Client','Email','Mode','Status','Date','Notes'].join(',')];
+        selected.forEach(s => {
+            csvRows.push([s.id, q(s.company_name), q(s.client_name), q(s.client_email), s.mode, s.status, s.created_at, q(s.notes || '')].join(','));
+        });
+        const blob = new Blob([csvRows.join('\n')], { type: 'text/csv' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url; a.download = `briefs-export-${new Date().toISOString().slice(0,10)}.csv`;
+        a.click(); URL.revokeObjectURL(url);
+        toast(`${selected.length} submissions exported`);
+    }
+
+    function q(str) { return '"' + String(str).replace(/"/g, '""') + '"'; }
+
+    function formatDate(d) {
+        const date = new Date(d + 'Z');
+        return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    }
+
+    function esc(s) {
+        if (!s) return '';
+        return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+})();
+</script>
+</body>
+</html>

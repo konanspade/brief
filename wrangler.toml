@@ -1,0 +1,8 @@
+name = "ks-brand-brief"
+compatibility_date = "2024-09-23"
+pages_build_output_dir = "."
+
+[[d1_databases]]
+binding = "DB"
+database_name = "ks-brand-briefs"
+database_id = "3d3f732c-8953-4c81-8f7d-a828e2686d60"

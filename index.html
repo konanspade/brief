@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brand Design Brief - Konan &amp; Spade</title>
+    <meta name="description" content="Complete this questionnaire to help Konan & Spade design your perfect brand identity.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,300..700;1,300..700&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.88em' font-size='80' fill='%23c49a6c'>♠</text></svg>">
+</head>
+<body class="mode-general">
+    <div class="noise-overlay" aria-hidden="true"></div>
+
+    <div class="progress-bar" role="progressbar" aria-label="Form progress">
+        <div class="progress-fill" id="progressFill"></div>
+    </div>
+
+    <header class="header">
+        <a class="logo" href="/"><img src="logo.svg" alt="Konan & Spade" class="logo-img"></a>
+        <div class="step-indicator" id="stepIndicator">
+            <span class="step-current" id="stepCurrent">01</span>
+            <span class="step-sep">-</span>
+            <span class="step-total">08</span>
+        </div>
+    </header>
+
+    <main class="main">
+        <form id="questionnaire" novalidate>
+
+            <!-- Step 0: Welcome -->
+            <section class="step active" data-step="0">
+                <div class="step-inner">
+                    <div class="step-header">
+                        <span class="step-eyebrow">Brand Design Brief</span>
+                        <h1 class="step-title">Tell us about<br><em>your vision</em></h1>
+                        <p class="step-desc">This questionnaire helps us understand your brand, audience, and goals - so we can craft something that truly represents you.</p>
+                    </div>
+                    <div class="mode-toggle">
+                        <span class="mode-label">This brief is for a</span>
+                        <div class="mode-options" id="modeToggle">
+                            <button type="button" class="mode-option active" data-mode="general">General Business</button>
+                            <button type="button" class="mode-option" data-mode="lawfirm">Law Firm</button>
+                        </div>
+                    </div>
+                    <div class="fields">
+                        <div class="field" style="--i:0">
+                            <label for="clientName">Your Name <span class="req">*</span></label>
+                            <input type="text" id="clientName" name="clientName" required placeholder="Jane Smith">
+                        </div>
+                        <div class="field" style="--i:1">
+                            <label for="clientEmail">Email Address <span class="req">*</span></label>
+                            <input type="email" id="clientEmail" name="clientEmail" required placeholder="jane@company.com">
+                        </div>
+                        <div class="field" style="--i:2">
+                            <label for="companyName">Company / Brand Name <span class="req">*</span></label>
+                            <input type="text" id="companyName" name="companyName" required placeholder="Acme Inc.">
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Step 1: Business Overview -->
+            <section class="step" data-step="1">
+                <div class="step-inner">
+                    <div class="step-header">
+                        <span class="step-eyebrow">02 - <span class="mode-only-general">Business Overview</span><span class="mode-only-lawfirm">Firm Overview</span></span>
+                        <h2 class="step-title">About your<br><em class="mode-only-general">business</em><em class="mode-only-lawfirm">firm</em></h2>
+                        <p class="step-desc mode-only-general">Help us understand what you do and what drives you.</p>
+                        <p class="step-desc mode-only-lawfirm">Help us understand your practice and what sets your firm apart.</p>
+                    </div>
+                    <div class="fields">
+                        <!-- General: Industry -->
+                        <div class="field-row mode-only-general" style="--i:0">
+                            <div class="field">
+                                <label for="industry">Industry / Sector <span class="req">*</span></label>
+                                <input type="text" id="industry" name="industry" placeholder="e.g. Technology, Fashion, F&amp;B">
+                            </div>
+                            <div class="field">
+                                <label for="founded">Year Founded</label>
+                                <input type="text" id="founded" name="founded" placeholder="e.g. 2020 or Pre-launch">
+                            </div>
+                        </div>
+                        <!-- Law Firm: Practice Areas + Firm Size -->
+                        <div class="field mode-only-lawfirm" style="--i:0">
+                            <label>Practice Areas <span class="req">*</span></label>
+                            <div class="checkbox-grid" id="practiceAreas">
+                                <label class="check-chip"><input type="checkbox" name="practiceAreas" value="Corporate & Business"><span>Corporate &amp; Business</span></label>
+                                <label class="check-chip"><input type="checkbox" name="practiceAreas" value="Criminal Defense"><span>Criminal Defense</span></label>
+                                <label class="check-chip"><input type="checkbox" name="practiceAreas" value="Family Law"><span>Family Law</span></label>
+                                <label class="check-chip"><input type="checkbox" name="practiceAreas" value="Real Estate"><span>Real Estate</span></label>
+                                <label class="check-chip"><input type="checkbox" name="practiceAreas" value="Intellectual Property"><span>Intellectual Property</span></label>
+                                <label class="check-chip"><input type="checkbox" name="practiceAreas" value="Employment & Labor"><span>Employment &amp; Labor</span></label>
+                                <label class="check-chip"><input type="checkbox" name="practiceAreas" value="Immigration"><span>Immigration</span></label>
+                                <label class="check-chip"><input type="checkbox" name="practiceAreas" value="Personal Injury"><span>Personal Injury</span></label>
+                                <label class="check-chip"><input type="checkbox" name="practiceAreas" value="Tax Law"><span>Tax Law</span></label>
+                                <label class="check-chip"><input type="checkbox" name="practiceAreas" value="Estate Planning"><span>Estate Planning</span></label>
+                                <label class="check-chip"><input type="checkbox" name="practiceAreas" value="Bankruptcy"><span>Bankruptcy</span></label>
+                                <label class="check-chip"><input type="checkbox" name="practiceAreas" value="Healthcare"><span>Healthcare</span></label>
+                                <label class="check-chip"><input type="checkbox" name="practiceAreas" value="Litigation"><span>Litigation</span></label>
+                                <label class="check-chip"><input type="checkbox" name="practiceAreas" value="Environmental"><span>Environmental</span></label>
+                                <label class="check-chip"><input type="checkbox" name="practiceAreas" value="Civil Rights"><span>Civil Rights</span></label>
+                                <label class="check-chip"><input type="checkbox" name="practiceAreas" value="Entertainment & Media"><span>Entertainment &amp; Media</span></label>
+                            </div>
+                        </div>
+                        <div class="field-row mode-only-lawfirm" style="--i:1">
+                            <div class="field">
+                                <label for="firmSize">Firm Size</label>
+                                <select id="firmSize" name="firmSize">
+                                    <option value="">Select</option>
+                                    <option value="Solo Practitioner">Solo Practitioner</option>
+                                    <option value="2-10 Attorneys">2 – 10 Attorneys</option>
+                                    <option value="11-50 Attorneys">11 – 50 Attorneys</option>
+                                    <option value="51-200 Attorneys">51 – 200 Attorneys</option>
+                                    <option value="200+ Attorneys">200+ Attorneys</option>
+                                </select>
+                            </div>
+                            <div class="field">
+                                <label for="foundedLaw">Year Established</label>
+                                <input type="text" id="foundedLaw" name="founded" placeholder="e.g. 1995 or New firm">
+                            </div>
+                        </div>
+                        <div class="field mode-only-lawfirm" style="--i:2">
+                            <label for="jurisdictions">Jurisdictions Served</label>
+                            <input type="text" id="jurisdictions" name="jurisdictions" placeholder="e.g. California, Federal courts, Nationwide">
+                        </div>
+                        <div class="field" style="--i:1">
+                            <label for="website">Current Website</label>
+                            <input type="url" id="website" name="website" placeholder="https://yoursite.com">
+                        </div>
+                        <div class="field" style="--i:2">
+                            <label for="businessDesc"><span class="mode-only-general">Tell us about your business</span><span class="mode-only-lawfirm">Tell us about your firm</span> <span class="req">*</span></label>
+                            <textarea id="businessDesc" name="businessDesc" required rows="3" placeholder="What do you do? What makes you different?"></textarea>
+                        </div>
+                        <div class="field mode-only-general" style="--i:3">
+                            <label for="products">Products or services you offer <span class="req">*</span></label>
+                            <textarea id="products" name="products" rows="2" placeholder="List your main offerings"></textarea>
+                        </div>
+                        <div class="field mode-only-lawfirm" style="--i:3">
+                            <label for="keyServices">Key services &amp; specializations <span class="req">*</span></label>
+                            <textarea id="keyServices" name="keyServices" rows="2" placeholder="e.g. M&A advisory, white-collar defense, high-net-worth estate planning..."></textarea>
+                        </div>
+                        <div class="field" style="--i:4">
+                            <label for="mission"><span class="mode-only-general">Mission or vision statement</span><span class="mode-only-lawfirm">Firm philosophy or mission</span></label>
+                            <textarea id="mission" name="mission" rows="2" placeholder="What's the bigger picture?"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Step 2: Target Audience -->
+            <section class="step" data-step="2">
+                <div class="step-inner">
+                    <div class="step-header">
+                        <span class="step-eyebrow">03 - <span class="mode-only-general">Target Audience</span><span class="mode-only-lawfirm">Ideal Clients</span></span>
+                        <h2 class="step-title">Who are you<br><em>speaking to?</em></h2>
+                        <p class="step-desc mode-only-general">Understanding your audience helps us design a brand that resonates.</p>
+                        <p class="step-desc mode-only-lawfirm">Understanding your clients helps us position your firm effectively.</p>
+                    </div>
+                    <div class="fields">
+                        <div class="field" style="--i:0">
+                            <label for="idealCustomer"><span class="mode-only-general">Describe your ideal customer</span><span class="mode-only-lawfirm">Describe your ideal client</span> <span class="req">*</span></label>
+                            <textarea id="idealCustomer" name="idealCustomer" required rows="3" placeholder="Who are they? What do they care about?"></textarea>
+                        </div>
+                        <!-- General: Age Range -->
+                        <div class="field-row mode-only-general" style="--i:1">
+                            <div class="field">
+                                <label for="ageRange">Age Range</label>
+                                <select id="ageRange" name="ageRange">
+                                    <option value="">Select</option>
+                                    <option value="18-24">18 – 24</option>
+                                    <option value="25-34">25 – 34</option>
+                                    <option value="35-44">35 – 44</option>
+                                    <option value="45-54">45 – 54</option>
+                                    <option value="55+">55+</option>
+                                    <option value="All ages">All ages</option>
+                                </select>
+                            </div>
+                            <div class="field">
+                                <label for="location">Primary Market / Location</label>
+                                <input type="text" id="location" name="location" placeholder="e.g. United States, Global">
+                            </div>
+                        </div>
+                        <!-- Law Firm: Client Type + Referral Sources -->
+                        <div class="field mode-only-lawfirm" style="--i:1">
+                            <label>Client Type <span class="hint">(select all that apply)</span></label>
+                            <div class="checkbox-grid">
+                                <label class="check-chip"><input type="checkbox" name="clientType" value="Individuals"><span>Individuals</span></label>
+                                <label class="check-chip"><input type="checkbox" name="clientType" value="Small Businesses"><span>Small Businesses</span></label>
+                                <label class="check-chip"><input type="checkbox" name="clientType" value="Corporations"><span>Corporations</span></label>
+                                <label class="check-chip"><input type="checkbox" name="clientType" value="Startups"><span>Startups</span></label>
+                                <label class="check-chip"><input type="checkbox" name="clientType" value="Government"><span>Government</span></label>
+                                <label class="check-chip"><input type="checkbox" name="clientType" value="Non-profits"><span>Non-profits</span></label>
+                            </div>
+                        </div>
+                        <div class="field mode-only-lawfirm" style="--i:2">
+                            <label for="referralSources">How do clients typically find you?</label>
+                            <input type="text" id="referralSources" name="referralSources" placeholder="e.g. Referrals, Google search, Bar association, Court appointments">
+                        </div>
+                        <div class="field" style="--i:2">
+                            <label for="painPoints"><span class="mode-only-general">What problems do you solve for them?</span><span class="mode-only-lawfirm">What do clients value most when choosing your firm?</span> <span class="req">*</span></label>
+                            <textarea id="painPoints" name="painPoints" required rows="3" placeholder="What frustrations or needs does your product/service address?"></textarea>
+                        </div>
+                        <div class="field mode-only-general" style="--i:3">
+                            <label for="customerChannels">Where does your audience spend time online?</label>
+                            <input type="text" id="customerChannels" name="customerChannels" placeholder="e.g. Instagram, LinkedIn, Reddit, TikTok">
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Step 3: Brand Personality -->
+            <section class="step" data-step="3">
+                <div class="step-inner">
+                    <div class="step-header">
+                        <span class="step-eyebrow">04 - Brand Personality</span>
+                        <h2 class="step-title">Define your<br><em>character</em></h2>
+                        <p class="step-desc">Select up to 5 traits that best describe your brand's personality.</p>
+                    </div>
+                    <div class="fields">
+                        <div class="field" style="--i:0">
+                            <label>Brand Traits <span class="req">*</span> <span class="trait-count" id="traitCount">0 / 5 selected</span></label>
+                            <div class="traits-grid" id="traitsGrid">
+                                <label class="trait-chip"><input type="checkbox" name="traits" value="Bold"><span>Bold</span></label>
+                                <label class="trait-chip"><input type="checkbox" name="traits" value="Elegant"><span>Elegant</span></label>
+                                <label class="trait-chip"><input type="checkbox" name="traits" value="Playful"><span>Playful</span></label>
+                                <label class="trait-chip"><input type="checkbox" name="traits" value="Sophisticated"><span>Sophisticated</span></label>
+                                <label class="trait-chip"><input type="checkbox" name="traits" value="Minimal"><span>Minimal</span></label>
+                                <label class="trait-chip"><input type="checkbox" name="traits" value="Edgy"><span>Edgy</span></label>
+                                <label class="trait-chip"><input type="checkbox" name="traits" value="Classic"><span>Classic</span></label>
+                                <label class="trait-chip"><input type="checkbox" name="traits" value="Innovative"><span>Innovative</span></label>
+                                <label class="trait-chip"><input type="checkbox" name="traits" value="Warm"><span>Warm</span></label>
+                                <label class="trait-chip"><input type="checkbox" name="traits" value="Luxurious"><span>Luxurious</span></label>
+                                <label class="trait-chip"><input type="checkbox" name="traits" value="Approachable"><span>Approachable</span></label>
+                                <label class="trait-chip"><input type="checkbox" name="traits" value="Authoritative"><span>Authoritative</span></label>
+                                <label class="trait-chip"><input type="checkbox" name="traits" value="Youthful"><span>Youthful</span></label>
+                                <label class="trait-chip"><input type="checkbox" name="traits" value="Timeless"><span>Timeless</span></label>
+                                <label class="trait-chip"><input type="checkbox" name="traits" value="Dynamic"><span>Dynamic</span></label>
+                                <label class="trait-chip"><input type="checkbox" name="traits" value="Refined"><span>Refined</span></label>
+                                <label class="trait-chip"><input type="checkbox" name="traits" value="Rustic"><span>Rustic</span></label>
+                                <label class="trait-chip"><input type="checkbox" name="traits" value="Futuristic"><span>Futuristic</span></label>
+                                <label class="trait-chip"><input type="checkbox" name="traits" value="Professional"><span>Professional</span></label>
+                                <label class="trait-chip"><input type="checkbox" name="traits" value="Artisanal"><span>Artisanal</span></label>
+                                <label class="trait-chip"><input type="checkbox" name="traits" value="Whimsical"><span>Whimsical</span></label>
+                                <label class="trait-chip"><input type="checkbox" name="traits" value="Vibrant"><span>Vibrant</span></label>
+                                <label class="trait-chip"><input type="checkbox" name="traits" value="Clean"><span>Clean</span></label>
+                                <label class="trait-chip"><input type="checkbox" name="traits" value="Organic"><span>Organic</span></label>
+                                <label class="trait-chip mode-only-lawfirm"><input type="checkbox" name="traits" value="Trustworthy"><span>Trustworthy</span></label>
+                                <label class="trait-chip mode-only-lawfirm"><input type="checkbox" name="traits" value="Prestigious"><span>Prestigious</span></label>
+                                <label class="trait-chip mode-only-lawfirm"><input type="checkbox" name="traits" value="Compassionate"><span>Compassionate</span></label>
+                                <label class="trait-chip mode-only-lawfirm"><input type="checkbox" name="traits" value="Tenacious"><span>Tenacious</span></label>
+                                <label class="trait-chip mode-only-lawfirm"><input type="checkbox" name="traits" value="Ethical"><span>Ethical</span></label>
+                                <label class="trait-chip mode-only-lawfirm"><input type="checkbox" name="traits" value="Established"><span>Established</span></label>
+                            </div>
+                        </div>
+                        <div class="field" style="--i:1">
+                            <label for="toneOfVoice">Tone of Voice <span class="req">*</span></label>
+                            <select id="toneOfVoice" name="toneOfVoice" required>
+                                <option value="">Select a tone</option>
+                                <option value="Professional & Formal">Professional &amp; Formal</option>
+                                <option value="Friendly & Conversational">Friendly &amp; Conversational</option>
+                                <option value="Playful & Witty">Playful &amp; Witty</option>
+                                <option value="Authoritative & Expert">Authoritative &amp; Expert</option>
+                                <option value="Inspirational & Aspirational">Inspirational &amp; Aspirational</option>
+                                <option value="Casual & Relatable">Casual &amp; Relatable</option>
+                                <option value="Luxurious & Refined">Luxurious &amp; Refined</option>
+                            </select>
+                        </div>
+                        <div class="field" style="--i:2">
+                            <label for="brandPerson">If your brand were a person, how would you describe them?</label>
+                            <textarea id="brandPerson" name="brandPerson" rows="2" placeholder="Think about their personality, how they dress, how they speak..."></textarea>
+                        </div>
+                        <div class="field" style="--i:3">
+                            <label for="brandEmotion">What emotions should your brand evoke?</label>
+                            <textarea id="brandEmotion" name="brandEmotion" rows="2" placeholder="e.g. Trust, excitement, calm, curiosity..."></textarea>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Step 4: Visual Direction -->
+            <section class="step" data-step="4">
+                <div class="step-inner">
+                    <div class="step-header">
+                        <span class="step-eyebrow">05 - Visual Direction</span>
+                        <h2 class="step-title">Shape the<br><em>look &amp; feel</em></h2>
+                        <p class="step-desc">Select the visual styles and colors you're drawn to.</p>
+                    </div>
+                    <div class="fields">
+                        <!-- General Visual Styles -->
+                        <div class="field mode-only-general" style="--i:0">
+                            <label>Visual styles that appeal to you <span class="hint">(select any)</span></label>
+                            <div class="style-cards">
+                                <label class="style-card">
+                                    <input type="checkbox" name="visualStyles" value="Minimal & Modern">
+                                    <div class="style-card-inner">
+                                        <div class="style-visual minimal"></div>
+                                        <span class="style-label">Minimal &amp; Modern</span>
+                                    </div>
+                                </label>
+                                <label class="style-card">
+                                    <input type="checkbox" name="visualStyles" value="Classic & Timeless">
+                                    <div class="style-card-inner">
+                                        <div class="style-visual classic"></div>
+                                        <span class="style-label">Classic &amp; Timeless</span>
+                                    </div>
+                                </label>
+                                <label class="style-card">
+                                    <input type="checkbox" name="visualStyles" value="Bold & Expressive">
+                                    <div class="style-card-inner">
+                                        <div class="style-visual bold-style"></div>
+                                        <span class="style-label">Bold &amp; Expressive</span>
+                                    </div>
+                                </label>
+                                <label class="style-card">
+                                    <input type="checkbox" name="visualStyles" value="Luxurious & Refined">
+                                    <div class="style-card-inner">
+                                        <div class="style-visual luxury"></div>
+                                        <span class="style-label">Luxurious &amp; Refined</span>
+                                    </div>
+                                </label>
+                                <label class="style-card">
+                                    <input type="checkbox" name="visualStyles" value="Playful & Creative">
+                                    <div class="style-card-inner">
+                                        <div class="style-visual playful"></div>
+                                        <span class="style-label">Playful &amp; Creative</span>
+                                    </div>
+                                </label>
+                                <label class="style-card">
+                                    <input type="checkbox" name="visualStyles" value="Organic & Natural">
+                                    <div class="style-card-inner">
+                                        <div class="style-visual organic"></div>
+                                        <span class="style-label">Organic &amp; Natural</span>
+                                    </div>
+                                </label>
+                                <label class="style-card">
+                                    <input type="checkbox" name="visualStyles" value="Retro & Vintage">
+                                    <div class="style-card-inner">
+                                        <div class="style-visual retro"></div>
+                                        <span class="style-label">Retro &amp; Vintage</span>
+                                    </div>
+                                </label>
+                                <label class="style-card">
+                                    <input type="checkbox" name="visualStyles" value="Industrial & Raw">
+                                    <div class="style-card-inner">
+                                        <div class="style-visual industrial"></div>
+                                        <span class="style-label">Industrial &amp; Raw</span>
+                                    </div>
+                                </label>
+                                <label class="style-card">
+                                    <input type="checkbox" name="visualStyles" value="Art Deco & Geometric">
+                                    <div class="style-card-inner">
+                                        <div class="style-visual artdeco"></div>
+                                        <span class="style-label">Art Deco &amp; Geometric</span>
+                                    </div>
+                                </label>
+                                <label class="style-card">
+                                    <input type="checkbox" name="visualStyles" value="Tech & Digital">
+                                    <div class="style-card-inner">
+                                        <div class="style-visual tech"></div>
+                                        <span class="style-label">Tech &amp; Digital</span>
+                                    </div>
+                                </label>
+                                <label class="style-card">
+                                    <input type="checkbox" name="visualStyles" value="Hand-Crafted & Artisanal">
+                                    <div class="style-card-inner">
+                                        <div class="style-visual artisanal"></div>
+                                        <span class="style-label">Hand-Crafted &amp; Artisanal</span>
+                                    </div>
+                                </label>
+                                <label class="style-card">
+                                    <input type="checkbox" name="visualStyles" value="Editorial & Magazine">
+                                    <div class="style-card-inner">
+                                        <div class="style-visual editorial"></div>
+                                        <span class="style-label">Editorial &amp; Magazine</span>
+                                    </div>
+                                </label>
+                                <label class="style-card">
+                                    <input type="checkbox" name="visualStyles" value="Soft & Pastel">
+                                    <div class="style-card-inner">
+                                        <div class="style-visual pastel"></div>
+                                        <span class="style-label">Soft &amp; Pastel</span>
+                                    </div>
+                                </label>
+                                <label class="style-card">
+                                    <input type="checkbox" name="visualStyles" value="Brutalist & Raw">
+                                    <div class="style-card-inner">
+                                        <div class="style-visual brutalist"></div>
+                                        <span class="style-label">Brutalist &amp; Raw</span>
+                                    </div>
+                                </label>
+                                <label class="style-card">
+                                    <input type="checkbox" name="visualStyles" value="Futuristic & Sci-Fi">
+                                    <div class="style-card-inner">
+                                        <div class="style-visual futuristic"></div>
+                                        <span class="style-label">Futuristic &amp; Sci-Fi</span>
+                                    </div>
+                                </label>
+                                <label class="style-card">
+                                    <input type="checkbox" name="visualStyles" value="Bohemian & Eclectic">
+                                    <div class="style-card-inner">
+                                        <div class="style-visual bohemian"></div>
+                                        <span class="style-label">Bohemian &amp; Eclectic</span>
+                                    </div>
+                                </label>
+                                <label class="style-card">
+                                    <input type="checkbox" name="visualStyles" value="Corporate & Clean">
+                                    <div class="style-card-inner">
+                                        <div class="style-visual corporate"></div>
+                                        <span class="style-label">Corporate &amp; Clean</span>
+                                    </div>
+                                </label>
+                                <label class="style-card">
+                                    <input type="checkbox" name="visualStyles" value="Maximalist & Ornate">
+                                    <div class="style-card-inner">
+                                        <div class="style-visual maximalist"></div>
+                                        <span class="style-label">Maximalist &amp; Ornate</span>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Law Firm Visual Styles -->
+                        <div class="field mode-only-lawfirm" style="--i:0">
+                            <label>Which visual direction resonates with your firm? <span class="hint">(select any)</span></label>
+                            <div class="style-cards">
+                                <label class="style-card">
+                                    <input type="checkbox" name="visualStyles" value="Traditional & Established">
+                                    <div class="style-card-inner">
+                                        <div class="style-visual law-traditional"></div>
+                                        <span class="style-label">Traditional &amp; Established</span>
+                                    </div>
+                                </label>
+                                <label class="style-card">
+                                    <input type="checkbox" name="visualStyles" value="Modern & Progressive">
+                                    <div class="style-card-inner">
+                                        <div class="style-visual law-modern"></div>
+                                        <span class="style-label">Modern &amp; Progressive</span>
+                                    </div>
+                                </label>
+                                <label class="style-card">
+                                    <input type="checkbox" name="visualStyles" value="Boutique & Personal">
+                                    <div class="style-card-inner">
+                                        <div class="style-visual law-boutique"></div>
+                                        <span class="style-label">Boutique &amp; Personal</span>
+                                    </div>
+                                </label>
+                                <label class="style-card">
+                                    <input type="checkbox" name="visualStyles" value="Corporate Powerhouse">
+                                    <div class="style-card-inner">
+                                        <div class="style-visual law-corporate"></div>
+                                        <span class="style-label">Corporate Powerhouse</span>
+                                    </div>
+                                </label>
+                                <label class="style-card">
+                                    <input type="checkbox" name="visualStyles" value="Approachable & Community">
+                                    <div class="style-card-inner">
+                                        <div class="style-visual law-community"></div>
+                                        <span class="style-label">Approachable &amp; Community</span>
+                                    </div>
+                                </label>
+                                <label class="style-card">
+                                    <input type="checkbox" name="visualStyles" value="Prestigious & Heritage">
+                                    <div class="style-card-inner">
+                                        <div class="style-visual law-heritage"></div>
+                                        <span class="style-label">Prestigious &amp; Heritage</span>
+                                    </div>
+                                </label>
+                                <label class="style-card">
+                                    <input type="checkbox" name="visualStyles" value="Minimal & Refined">
+                                    <div class="style-card-inner">
+                                        <div class="style-visual law-minimal"></div>
+                                        <span class="style-label">Minimal &amp; Refined</span>
+                                    </div>
+                                </label>
+                                <label class="style-card">
+                                    <input type="checkbox" name="visualStyles" value="Bold & Advocacy-Driven">
+                                    <div class="style-card-inner">
+                                        <div class="style-visual law-advocacy"></div>
+                                        <span class="style-label">Bold &amp; Advocacy-Driven</span>
+                                    </div>
+                                </label>
+                                <label class="style-card">
+                                    <input type="checkbox" name="visualStyles" value="Tech-Forward & Innovative">
+                                    <div class="style-card-inner">
+                                        <div class="style-visual law-techforward"></div>
+                                        <span class="style-label">Tech-Forward &amp; Innovative</span>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="field" style="--i:1">
+                            <label>Colors you're drawn to <span class="hint">(select any)</span></label>
+                            <div class="color-palettes">
+                                <div class="palette-group">
+                                    <span class="palette-label">Warm</span>
+                                    <div class="swatches">
+                                        <label class="swatch" style="--color:#c0392b" title="Crimson"><input type="checkbox" name="colorsLove" value="Crimson"><span class="swatch-fill"></span></label>
+                                        <label class="swatch" style="--color:#d35400" title="Terracotta"><input type="checkbox" name="colorsLove" value="Terracotta"><span class="swatch-fill"></span></label>
+                                        <label class="swatch" style="--color:#c49a6c" title="Gold"><input type="checkbox" name="colorsLove" value="Gold"><span class="swatch-fill"></span></label>
+                                        <label class="swatch" style="--color:#e74c3c" title="Coral"><input type="checkbox" name="colorsLove" value="Coral"><span class="swatch-fill"></span></label>
+                                        <label class="swatch" style="--color:#f39c12" title="Amber"><input type="checkbox" name="colorsLove" value="Amber"><span class="swatch-fill"></span></label>
+                                    </div>
+                                </div>
+                                <div class="palette-group">
+                                    <span class="palette-label">Cool</span>
+                                    <div class="swatches">
+                                        <label class="swatch" style="--color:#1a3a5c" title="Navy"><input type="checkbox" name="colorsLove" value="Navy"><span class="swatch-fill"></span></label>
+                                        <label class="swatch" style="--color:#2980b9" title="Ocean"><input type="checkbox" name="colorsLove" value="Ocean"><span class="swatch-fill"></span></label>
+                                        <label class="swatch" style="--color:#1abc9c" title="Teal"><input type="checkbox" name="colorsLove" value="Teal"><span class="swatch-fill"></span></label>
+                                        <label class="swatch" style="--color:#5b6abf" title="Indigo"><input type="checkbox" name="colorsLove" value="Indigo"><span class="swatch-fill"></span></label>
+                                        <label class="swatch" style="--color:#8e44ad" title="Violet"><input type="checkbox" name="colorsLove" value="Violet"><span class="swatch-fill"></span></label>
+                                    </div>
+                                </div>
+                                <div class="palette-group">
+                                    <span class="palette-label">Earth</span>
+                                    <div class="swatches">
+                                        <label class="swatch" style="--color:#27ae60" title="Forest"><input type="checkbox" name="colorsLove" value="Forest"><span class="swatch-fill"></span></label>
+                                        <label class="swatch" style="--color:#6b8e23" title="Olive"><input type="checkbox" name="colorsLove" value="Olive"><span class="swatch-fill"></span></label>
+                                        <label class="swatch" style="--color:#795548" title="Walnut"><input type="checkbox" name="colorsLove" value="Walnut"><span class="swatch-fill"></span></label>
+                                        <label class="swatch" style="--color:#d4a574" title="Sand"><input type="checkbox" name="colorsLove" value="Sand"><span class="swatch-fill"></span></label>
+                                        <label class="swatch" style="--color:#a0522d" title="Sienna"><input type="checkbox" name="colorsLove" value="Sienna"><span class="swatch-fill"></span></label>
+                                    </div>
+                                </div>
+                                <div class="palette-group">
+                                    <span class="palette-label">Neutral</span>
+                                    <div class="swatches">
+                                        <label class="swatch" style="--color:#1a1a1a" title="Black"><input type="checkbox" name="colorsLove" value="Black"><span class="swatch-fill"></span></label>
+                                        <label class="swatch" style="--color:#4a4a4a" title="Charcoal"><input type="checkbox" name="colorsLove" value="Charcoal"><span class="swatch-fill"></span></label>
+                                        <label class="swatch" style="--color:#b0b0b0" title="Silver"><input type="checkbox" name="colorsLove" value="Silver"><span class="swatch-fill"></span></label>
+                                        <label class="swatch" style="--color:#f5f0e8" title="Cream"><input type="checkbox" name="colorsLove" value="Cream"><span class="swatch-fill"></span></label>
+                                        <label class="swatch" style="--color:#ffffff" title="White"><input type="checkbox" name="colorsLove" value="White"><span class="swatch-fill swatch-white"></span></label>
+                                    </div>
+                                </div>
+                                <div class="palette-group">
+                                    <span class="palette-label">Pastel</span>
+                                    <div class="swatches">
+                                        <label class="swatch" style="--color:#e8a0b4" title="Blush"><input type="checkbox" name="colorsLove" value="Blush"><span class="swatch-fill"></span></label>
+                                        <label class="swatch" style="--color:#b39ddb" title="Lavender"><input type="checkbox" name="colorsLove" value="Lavender"><span class="swatch-fill"></span></label>
+                                        <label class="swatch" style="--color:#80cbc4" title="Seafoam"><input type="checkbox" name="colorsLove" value="Seafoam"><span class="swatch-fill"></span></label>
+                                        <label class="swatch" style="--color:#ffcc80" title="Peach"><input type="checkbox" name="colorsLove" value="Peach"><span class="swatch-fill"></span></label>
+                                        <label class="swatch" style="--color:#fff59d" title="Butter"><input type="checkbox" name="colorsLove" value="Butter"><span class="swatch-fill"></span></label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="field" style="--i:2">
+                            <label for="brandsAdmire">Brands whose visual style you admire</label>
+                            <textarea id="brandsAdmire" name="brandsAdmire" rows="2" placeholder="e.g. Apple, Aesop, Patagonia - and what you like about them"></textarea>
+                        </div>
+                        <div class="field" style="--i:3">
+                            <label for="visualAvoid">Visual styles or elements to avoid</label>
+                            <textarea id="visualAvoid" name="visualAvoid" rows="2" placeholder="Anything you definitely don't want?"></textarea>
+                        </div>
+                        <div class="field" style="--i:4">
+                            <label>Do you have existing brand assets?</label>
+                            <div class="radio-group">
+                                <label class="radio-label"><input type="radio" name="hasAssets" value="Yes"><span>Yes - I'll share them separately</span></label>
+                                <label class="radio-label"><input type="radio" name="hasAssets" value="No"><span>No - starting fresh</span></label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Step 5: Competitive Landscape -->
+            <section class="step" data-step="5">
+                <div class="step-inner">
+                    <div class="step-header">
+                        <span class="step-eyebrow">06 - Competitive Landscape</span>
+                        <h2 class="step-title">Know your<br><em>market</em></h2>
+                        <p class="step-desc">Help us understand your competitive space so we can position you distinctly.</p>
+                    </div>
+                    <div class="fields">
+                        <div class="field" style="--i:0">
+                            <label>Your top competitors</label>
+                            <div class="multi-input">
+                                <input type="text" name="competitor1" placeholder="Competitor 1">
+                                <input type="text" name="competitor2" placeholder="Competitor 2">
+                                <input type="text" name="competitor3" placeholder="Competitor 3">
+                            </div>
+                        </div>
+                        <div class="field" style="--i:1">
+                            <label for="competitorLike">What do you like about their branding?</label>
+                            <textarea id="competitorLike" name="competitorLike" rows="2" placeholder="What works well for them?"></textarea>
+                        </div>
+                        <div class="field" style="--i:2">
+                            <label for="competitorDislike">What do you dislike about their branding?</label>
+                            <textarea id="competitorDislike" name="competitorDislike" rows="2" placeholder="What feels wrong or generic?"></textarea>
+                        </div>
+                        <div class="field" style="--i:3">
+                            <label for="differentiation">How should your brand stand apart? <span class="req">*</span></label>
+                            <textarea id="differentiation" name="differentiation" required rows="3" placeholder="What makes you fundamentally different?"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Step 6: Additional Notes -->
+            <section class="step" data-step="6">
+                <div class="step-inner">
+                    <div class="step-header">
+                        <span class="step-eyebrow">07 - Final Thoughts</span>
+                        <h2 class="step-title">Anything<br><em>else?</em></h2>
+                        <p class="step-desc">Any additional context, requirements, or inspiration you'd like to share.</p>
+                    </div>
+                    <div class="fields">
+                        <div class="field" style="--i:0">
+                            <label for="requirements">Specific requirements or constraints</label>
+                            <textarea id="requirements" name="requirements" rows="2" placeholder="e.g. Must work in single-color, needs to include a specific symbol..."></textarea>
+                        </div>
+                        <div class="field" style="--i:1">
+                            <label for="anythingElse">Anything else we should know?</label>
+                            <textarea id="anythingElse" name="anythingElse" rows="3" placeholder="Additional context, inspiration, stories - the more we know, the better"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Step 7: Review -->
+            <section class="step" data-step="7">
+                <div class="step-inner">
+                    <div class="step-header">
+                        <span class="step-eyebrow">08 - Review</span>
+                        <h2 class="step-title">Review your<br><em>brief</em></h2>
+                        <p class="step-desc">Look over your responses before submitting. Click any section heading to edit.</p>
+                    </div>
+                    <div class="review-content" id="reviewContent"></div>
+                </div>
+            </section>
+
+        </form>
+
+        <!-- Completion -->
+        <section class="completion" id="completion">
+            <div class="completion-inner">
+                <div class="completion-icon">&#10022;</div>
+                <h2 class="completion-title">Brief submitted</h2>
+                <p class="completion-text" id="completionText">Thank you. We've received your brand design brief and our team will review it shortly.</p>
+                <p class="completion-note">A copy has been saved to your clipboard.</p>
+                <div class="completion-actions">
+                    <button type="button" class="btn btn-outline" id="btnCopyBrief">Copy Brief Again</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="nav-footer" id="navFooter">
+        <button type="button" class="btn btn-back" id="btnBack">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+            Back
+        </button>
+        <button type="button" class="btn btn-next" id="btnNext">
+            Continue
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
+        </button>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
