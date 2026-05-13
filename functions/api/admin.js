@@ -151,10 +151,26 @@ export async function onRequestOptions() {
 
 function checkAuth(request, env) {
   const auth = request.headers.get('Authorization');
-  const token = env.ADMIN_TOKEN;
-  if (!token) return json({ error: 'Admin not configured' }, 500);
-  if (!auth || auth !== `Bearer ${token}`) return json({ error: 'Unauthorized' }, 401);
-  return null;
+  if (!auth) return json({ error: 'Unauthorized' }, 401);
+
+  if (auth.startsWith('Bearer ')) {
+    const token = env.ADMIN_TOKEN;
+    if (!token) return json({ error: 'Admin not configured' }, 500);
+    if (auth !== `Bearer ${token}`) return json({ error: 'Unauthorized' }, 401);
+    return null;
+  }
+
+  if (auth.startsWith('Basic ')) {
+    const username = env.ADMIN_USERNAME;
+    const password = env.ADMIN_PASSWORD;
+    if (!username || !password) return json({ error: 'Admin not configured' }, 500);
+    const decoded = atob(auth.slice(6));
+    const [user, pass] = decoded.split(':');
+    if (user !== username || pass !== password) return json({ error: 'Unauthorized' }, 401);
+    return null;
+  }
+
+  return json({ error: 'Unauthorized' }, 401);
 }
 
 function json(data, status = 200) {

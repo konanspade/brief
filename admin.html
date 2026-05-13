@@ -139,10 +139,20 @@
     <div class="login-box">
         <img src="logo.svg" alt="Konan & Spade" style="height:24px;filter:invert(1);margin-bottom:24px">
         <h1>Admin Panel</h1>
-        <p>Enter your admin token to view submissions.</p>
-        <input type="password" id="tokenInput" placeholder="Admin token" autofocus>
+        <p>Sign in to view submissions.</p>
+        <div id="loginTabs" style="display:flex;gap:0;margin-bottom:20px;border:1.5px solid var(--border);border-radius:var(--radius);overflow:hidden">
+            <button class="login-tab active" data-tab="credentials" style="flex:1;padding:10px;border:none;font-family:'Outfit',sans-serif;font-size:.82rem;font-weight:500;cursor:pointer;background:var(--accent);color:#fff;transition:all .2s">Username</button>
+            <button class="login-tab" data-tab="token" style="flex:1;padding:10px;border:none;font-family:'Outfit',sans-serif;font-size:.82rem;font-weight:500;cursor:pointer;background:var(--surface);color:var(--text-sec);transition:all .2s">Token</button>
+        </div>
+        <div id="credentialsForm">
+            <input type="text" id="usernameInput" placeholder="Username" autofocus>
+            <input type="password" id="passwordInput" placeholder="Password">
+        </div>
+        <div id="tokenForm" style="display:none">
+            <input type="password" id="tokenInput" placeholder="Admin token">
+        </div>
         <button id="loginBtn">Sign In</button>
-        <div class="login-error" id="loginError">Invalid token. Please try again.</div>
+        <div class="login-error" id="loginError">Invalid credentials. Please try again.</div>
     </div>
 </div>
 
@@ -279,7 +289,8 @@
 
 <script>
 (() => {
-    let token = sessionStorage.getItem('ks-admin-token') || '';
+    let authHeader = sessionStorage.getItem('ks-admin-auth') || '';
+    let activeTab = 'credentials';
     let currentFilter = '';
     let currentMode = '';
     let currentSubmission = null;
@@ -288,13 +299,35 @@
     let selectedIds = new Set();
 
     const API = '/api/admin';
-    const headers = () => ({ 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` });
+    const headers = () => ({ 'Content-Type': 'application/json', 'Authorization': authHeader });
 
-    if (token) tryLogin(token);
+    if (authHeader) tryAuth(authHeader);
 
-    document.getElementById('loginBtn').addEventListener('click', () => tryLogin(document.getElementById('tokenInput').value.trim()));
+    document.querySelectorAll('.login-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+            activeTab = tab.dataset.tab;
+            document.querySelectorAll('.login-tab').forEach(t => { t.style.background = 'var(--surface)'; t.style.color = 'var(--text-sec)'; t.classList.remove('active'); });
+            tab.style.background = 'var(--accent)'; tab.style.color = '#fff'; tab.classList.add('active');
+            document.getElementById('credentialsForm').style.display = activeTab === 'credentials' ? 'block' : 'none';
+            document.getElementById('tokenForm').style.display = activeTab === 'token' ? 'block' : 'none';
+            document.getElementById('loginError').style.display = 'none';
+        });
+    });
+
+    document.getElementById('loginBtn').addEventListener('click', () => {
+        if (activeTab === 'token') {
+            const t = document.getElementById('tokenInput').value.trim();
+            if (t) tryAuth(`Bearer ${t}`);
+        } else {
+            const u = document.getElementById('usernameInput').value.trim();
+            const p = document.getElementById('passwordInput').value;
+            if (u && p) tryAuth(`Basic ${btoa(u + ':' + p)}`);
+        }
+    });
     document.getElementById('tokenInput').addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('loginBtn').click(); });
-    document.getElementById('btnLogout').addEventListener('click', () => { sessionStorage.removeItem('ks-admin-token'); location.reload(); });
+    document.getElementById('passwordInput').addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('loginBtn').click(); });
+    document.getElementById('usernameInput').addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('passwordInput').focus(); });
+    document.getElementById('btnLogout').addEventListener('click', () => { sessionStorage.removeItem('ks-admin-auth'); location.reload(); });
     document.getElementById('btnRefresh').addEventListener('click', loadSubmissions);
     document.getElementById('detailClose').addEventListener('click', closeDetail);
     document.getElementById('detailOverlay').addEventListener('click', closeDetail);
@@ -332,18 +365,19 @@
         });
     });
 
-    async function tryLogin(t) {
-        token = t;
+    async function tryAuth(auth) {
+        authHeader = auth;
         try {
             const res = await fetch(`${API}?limit=1`, { headers: headers() });
             if (res.ok) {
-                sessionStorage.setItem('ks-admin-token', token);
+                sessionStorage.setItem('ks-admin-auth', authHeader);
                 document.getElementById('loginScreen').style.display = 'none';
                 document.getElementById('dashboard').style.display = 'block';
                 loadSubmissions();
             } else {
                 document.getElementById('loginError').style.display = 'block';
-                sessionStorage.removeItem('ks-admin-token');
+                sessionStorage.removeItem('ks-admin-auth');
+                authHeader = '';
             }
         } catch (e) {
             document.getElementById('loginError').style.display = 'block';
